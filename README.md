@@ -16,6 +16,10 @@ Logic Engine is an Android application that runs on a REV Control Hub to operate
 
 ---
 
+## What IS FTC
+
+FIRST Tech Challenge (FTC) is a program by FIRST to enable people 12-18 to build and program robots to compete in 2v2 bracket style. This past season was called "DECODE", and our robot had to fire five inch wiffle balls into a funnel connected to a gutter to score points. Most seasons include the robot moving game pieces in some way, whether its launching the game piece like this year, or pushing/picking them up.
+
 ## Why I built it this way
 
 Most FTC code is assembled from SDK samples and community libraries. That works, but it means you're operating software you don't fully own. When something breaks in competition, you're debugging someone else's abstractions under pressure, and most of those I simply didn't understand why certain decisions were made.
