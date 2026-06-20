@@ -55,7 +55,6 @@ TeamCode/
 
 ## AI usage
 
-I did use some ai in this:
     * What I did:
     Computer vision
     Pathfinding & Following
