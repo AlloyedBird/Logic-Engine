@@ -1,0 +1,9 @@
+{
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.import.gradle.enabled": true,
+  "java.import.gradle.wrapper.enabled": true,
+  "java.import.gradle.offline.enabled": false,
+  "terminal.integrated.env.linux": {
+    "ANDROID_HOME": "/home/daniel-jagger/Android/Sdk"
+  }
+}

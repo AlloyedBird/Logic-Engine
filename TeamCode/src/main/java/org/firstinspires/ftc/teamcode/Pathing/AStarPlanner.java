@@ -100,12 +100,44 @@ public class  AStarPlanner {
                     double ng = current.g + stepCost;
                     int nKey = key(nx, ny);
 
+                    if (ng >= bestGF.getOrDefault(nKey, Double.MAX_VALUE)) continue;
+
+                    bestGF.put(nKey, ng);
+                    double nf = ng + heuristic(nx, ny, gx, gy);
+                    Node neighbor = new Node(nx, ny, ng, nf, current);
+                    parentF.put(nKey, neighbor);
+                    openF.add(neighbor);
+                }
+            } else {
+                Node current = openB.poll();
+                int cKey = key(current.x, current.y);
+
+                if(current.g > bestGB.getOrDefault((cKey), Double.MAX_VALUE)) continue;
+
+                if (bestGF.containsKey(cKey)){
+                    double candidate = current.g + bestGF.get(cKey);
+                    if (candidate < bestCost){
+                        bestCost = candidate;
+                        meetingKey = cKey;
+                    }
+                }
+
+                for(int[] dir : NEIGHBORS){
+                    int nx = current.x + dir [0];
+                    int ny = current.y + dir [1];
+                    if (!grid.isWalkable(nx, ny)) continue;
+
+                    double stepCost = (dir[0] != 0 && dir[1] != 0) ? DIAGONAL_COST : STRAIGHT_COST;
+                    double ng = current.g + stepCost;
+                    int nKey = key(nx, ny);
+
                     if (ng >= bestGB.getOrDefault(nKey, Double.MAX_VALUE)) continue;
 
                     bestGB.put(nKey, ng);
-                    parentB.put(nKey, current);
                     double nf = ng + heuristic(nx, ny, sx, sy);
-                    openB.add(new Node(nx, ny, ng, nf, current));
+                    Node neighbor = new Node(nx, ny, ng, nf, current);
+                    parentB.put(nKey, neighbor);
+                    openB.add(neighbor);
                 }
             }
         }

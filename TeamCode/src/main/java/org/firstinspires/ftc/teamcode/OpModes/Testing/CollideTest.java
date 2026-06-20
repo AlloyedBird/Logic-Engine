@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.OpModes.Teleop;
+package org.firstinspires.ftc.teamcode.OpModes.Testing;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.Motion.MecanumKinematics;
 import org.firstinspires.ftc.teamcode.Motion.PIDController;
 import org.firstinspires.ftc.teamcode.Motion.WaypointFollower;
 import org.firstinspires.ftc.teamcode.Pathing.PathCoordinator;
-import org.firstinspires.ftc.teamcode.Vision.ShinyObjectDetector;
+import org.firstinspires.ftc.teamcode.Vision.FieldObjectDetector;
 import java.util.ArrayList;
 
 @TeleOp(name = "Collision avoidance test", group = "test")
@@ -24,8 +24,8 @@ import java.util.ArrayList;
             PathCoordinator coordinator = new PathCoordinator(2);
             coordinator.bakeStaticObstacles(new ArrayList<>());
 
-            ShinyObjectDetector shinyDetector = new ShinyObjectDetector();
-            PoseEstimator estimator = new PoseEstimator(hardwareMap,new Pose(0,0,0),shinyDetector);
+            FieldObjectDetector detector = new FieldObjectDetector();
+            PoseEstimator estimator = new PoseEstimator(hardwareMap, new Pose(0, 0, 0), detector);
 
             PIDController xPid = new PIDController(0.1,0,0.01);
             PIDController yPid = new PIDController(0.1, 0, 0.01);
@@ -47,11 +47,9 @@ import java.util.ArrayList;
                 backLeft.setPower(wheels.backLeft);
                 backRight.setPower(wheels.backRight);
 
-                if (shinyDetector.isRobotDetected()){
-                    telemetry.addData("Robot detected?", shinyDetector);
-                } else {
-                    telemetry.addData("No robot detected", null);
-                }
+                telemetry.addData("Robot detected", detector.isRobotDetected());
+                telemetry.addData("Wall detected", detector.isWallDetected());
+                telemetry.update();
             }
             estimator.stop();
         }

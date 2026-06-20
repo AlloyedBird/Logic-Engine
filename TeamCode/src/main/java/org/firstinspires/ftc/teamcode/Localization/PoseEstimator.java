@@ -2,11 +2,15 @@ package org.firstinspires.ftc.teamcode.Localization;
 
 import org.firstinspires.ftc.teamcode.Geometry.Pose;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import org.firstinspires.ftc.teamcode.Vision.ShinyObjectDetector;
+import org.firstinspires.ftc.teamcode.Vision.FieldObjectDetector;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import  java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -19,20 +23,40 @@ public class PoseEstimator{
     private static final int CAMERA_WIDTH = 640;
     private static final int CAMERA_HEIGHT = 480;
 
-    public PoseEstimator(HardwareMap hardwareMap, Pose initialPose, ShinyObjectDetector shinyDetector){
+    // Camera mount offset relative to the robot's center of rotation, and the camera's
+    // facing offset relative to the robot's forward heading. Robot frame: +X forward,
+    // +Y left, yaw measured counterclockwise from forward (FTC SDK convention).
+    // Defaults assume a centered, forward-facing camera — update to match your robot.
+    private static final double CAMERA_OFFSET_X_INCHES = 0.0;
+    private static final double CAMERA_OFFSET_Y_INCHES = 0.0;
+    private static final double CAMERA_HEADING_OFFSET_DEGREES = 0.0;
+
+    // Higher decimation trades AprilTag detection range for frame rate. 2 is a
+    // common balance for FTC's ~12x12ft field; raise toward 3 if you need more
+    // speed and only ever need tags at close range, or drop to 1 for max range.
+    private static final float APRILTAG_DECIMATION = 2;
+
+    public PoseEstimator(HardwareMap hardwareMap, Pose initialPose, FieldObjectDetector detector) {
         this.currentPose = new AtomicReference<>(initialPose);
 
         aprilTag = new AprilTagProcessor.Builder()
-                .setDrawAxes(true)
-                .setDrawCubeProjection(true)
-                .setDrawTagOutline(true)
+                .setCameraPose(
+                        new Position(DistanceUnit.INCH,
+                                CAMERA_OFFSET_X_INCHES, CAMERA_OFFSET_Y_INCHES, 0, 0),
+                        new YawPitchRollAngles(AngleUnit.DEGREES,
+                                CAMERA_HEADING_OFFSET_DEGREES, 0, 0, 0))
+                .setDrawAxes(false)
+                .setDrawCubeProjection(false)
+                .setDrawTagOutline(false)
                 .build();
+        aprilTag.setDecimation(APRILTAG_DECIMATION);
 
-
-        visionPortal = new VisionPortal.Builder()
+        VisionPortal.Builder builder = new VisionPortal.Builder()
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam"))
+                .setAutoStopLiveView(true)
                 .addProcessor(aprilTag)
-                .addProcessor(shinyDetector)
+                .addProcessor(detector);
+        visionPortal = builder
                 .setCameraResolution(new android.util.Size(CAMERA_WIDTH, CAMERA_HEIGHT))
                 .build();
     }
@@ -49,49 +73,8 @@ public class PoseEstimator{
     private void updatePose(){
         List<AprilTagDetection> detections = aprilTag.getDetections();
         if (detections == null) return;
-        if (detections.isEmpty()) return;
 
-        double sumX = 0;
-        double sumY = 0;
-        double sumHeading = 0;
-        int count = 0;
-
-        for (AprilTagDetection detection : detections) {
-            if (detection.metadata == null) continue;
-
-            Pose tagPose = poseFromDetection(detection);
-            if (tagPose == null) continue;
-
-            sumX += tagPose.x;
-            sumY += tagPose.y;
-            sumHeading += tagPose.heading;
-            count++;
-        }
-        if (count == 0) return;
-        currentPose.set(new Pose(sumX / count,
-                sumY / count,
-                sumHeading / count));
-    }
-
-    private Pose poseFromDetection(AprilTagDetection detection){
-        if (detection.ftcPose == null) return null;
-
-        double tagX = detection.metadata.fieldPosition.get(0);
-        double tagY = detection.metadata.fieldPosition.get(1);
-
-        double relX = detection.ftcPose.x;
-        double relY = detection.ftcPose.y;
-        double yaw = Math.toRadians(detection.ftcPose.yaw);
-
-        double robotX = tagX - relX;
-        double robotY = tagY - relY;
-        double robotHeading = normalizeAngle(yaw);
-        return new Pose(robotX, robotY, robotHeading);
-    }
-
-    private double normalizeAngle(double angle){
-        while (angle > Math.PI) angle -= 2 * Math.PI;
-        while (angle < Math.PI) angle += 2 * Math.PI;
-        return angle;
+        Pose averaged = AprilTagPoseMath.averageDetections(detections);
+        if (averaged != null) currentPose.set(averaged);
     }
 }

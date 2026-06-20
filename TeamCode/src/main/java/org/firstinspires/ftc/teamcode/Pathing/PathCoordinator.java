@@ -73,9 +73,12 @@ public class PathCoordinator {
                 double dx = points.get(i + 1)[0] - x;
                 double dy = points.get(i + 1)[1] - y;
                 heading = Math.atan2(dy, dx);
-            } else {
+            } else if (i > 0) {
                 // Last waypoint inherits previous heading
                 heading = waypoints.get(i - 1).heading;
+            } else {
+                // Single-waypoint path (start and goal in the same cell) — no direction of travel available
+                heading = 0.0;
             }
 
             waypoints.add(new Waypoint(x, y, heading));
