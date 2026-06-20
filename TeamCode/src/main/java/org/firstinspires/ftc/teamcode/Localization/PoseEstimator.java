@@ -23,17 +23,9 @@ public class PoseEstimator{
     private static final int CAMERA_WIDTH = 640;
     private static final int CAMERA_HEIGHT = 480;
 
-    // Camera mount offset relative to the robot's center of rotation, and the camera's
-    // facing offset relative to the robot's forward heading. Robot frame: +X forward,
-    // +Y left, yaw measured counterclockwise from forward (FTC SDK convention).
-    // Defaults assume a centered, forward-facing camera — update to match your robot.
     private static final double CAMERA_OFFSET_X_INCHES = 0.0;
     private static final double CAMERA_OFFSET_Y_INCHES = 0.0;
     private static final double CAMERA_HEADING_OFFSET_DEGREES = 0.0;
-
-    // Higher decimation trades AprilTag detection range for frame rate. 2 is a
-    // common balance for FTC's ~12x12ft field; raise toward 3 if you need more
-    // speed and only ever need tags at close range, or drop to 1 for max range.
     private static final float APRILTAG_DECIMATION = 2;
 
     public PoseEstimator(HardwareMap hardwareMap, Pose initialPose, FieldObjectDetector detector) {

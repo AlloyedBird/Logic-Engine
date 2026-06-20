@@ -19,13 +19,11 @@ public class IvyTest extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        // --- Hardware ---
         DcMotor frontLeft  = hardwareMap.get(DcMotor.class, "frontLeft");
         DcMotor frontRight = hardwareMap.get(DcMotor.class, "frontRight");
         DcMotor backLeft   = hardwareMap.get(DcMotor.class, "backLeft");
         DcMotor backRight  = hardwareMap.get(DcMotor.class, "backRight");
 
-        // --- Subsystems ---
         PathCoordinator coordinator = new PathCoordinator(2); // inflation radius in cells
         coordinator.bakeStaticObstacles(new ArrayList<>());// TODO: add field elements
 
@@ -47,7 +45,6 @@ public class IvyTest extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            // --- Manual drive ---
             double x   =  gamepad1.left_stick_x;
             double y   = -gamepad1.left_stick_y;
             double rot =  gamepad1.right_stick_x;
@@ -60,17 +57,14 @@ public class IvyTest extends LinearOpMode {
             backLeft.setPower(wheels.backLeft);
             backRight.setPower(wheels.backRight);
 
-            // --- Ivy tick ---
             Scheduler.execute();
 
-            // --- Telemetry ---
             Pose pose = estimator.getPose();
             telemetry.addData("x",       pose.x);
             telemetry.addData("y",       pose.y);
             telemetry.addData("heading", Math.toDegrees(pose.heading));
             telemetry.update();
 
-            // --- Update the obstacles for AStar ---
             coordinator.updateDynamicObstacles(new ArrayList<>());
 
         }

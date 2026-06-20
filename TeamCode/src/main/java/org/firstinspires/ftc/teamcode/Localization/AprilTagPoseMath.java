@@ -15,19 +15,11 @@ import java.util.List;
 public final class AprilTagPoseMath {
 
     private AprilTagPoseMath() {}
-
-    /**
-     * Averages the robot pose across all detections with known tag metadata and a
-     * solved robot pose. Returns null if no detection qualifies.
-     */
     public static Pose averageDetections(List<AprilTagDetection> detections) {
         if (detections == null || detections.isEmpty()) return null;
 
         double sumX = 0;
         double sumY = 0;
-        // Headings are averaged circularly (mean of unit vectors, then atan2) rather than
-        // arithmetically, so detections that straddle the +-pi wrap boundary still average
-        // to the correct side instead of cancelling out to a value near zero.
         double sumSin = 0;
         double sumCos = 0;
         int count = 0;
@@ -50,10 +42,6 @@ public final class AprilTagPoseMath {
     }
 
     public static Pose poseFromDetection(AprilTagDetection detection) {
-        // detection.robotPose is computed by the SDK from the tag's known field pose,
-        // the camera's relative observation, and the camera's mount offset configured
-        // via setCameraPose() — it already accounts for robot heading, unlike a
-        // naive subtraction of the tag-relative offset from the tag's field position.
         if (detection.robotPose == null) return null;
 
         Position position = detection.robotPose.getPosition().toUnit(DistanceUnit.INCH);

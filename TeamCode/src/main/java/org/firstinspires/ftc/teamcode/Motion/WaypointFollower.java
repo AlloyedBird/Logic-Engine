@@ -23,20 +23,12 @@ public class WaypointFollower {
     private final PathCoordinator coordinator;
     private final PoseEstimator estimator;
 
-    /**
-     * Trapezoidal velocity profile applied across the whole path. Set
-     * {@code follower.profile.maxVelocity} to the cruise / max-average robot speed
-     * (fraction of full drive power, [0, 1]); see {@link TrapezoidalProfile} for the
-     * accel/decel knobs.
-     */
     public final TrapezoidalProfile profile = new TrapezoidalProfile();
 
     private List<Waypoint> path;
     private int currentIndex = 0;
     private boolean active = false;
 
-    // Cumulative arc length from the start to each waypoint, inches. cumLength[i] is
-    // the distance from path.get(0) to path.get(i); the last entry is the total.
     private double[] cumLength = new double[0];
     private double currentSpeed = 0; // last profiled speed, exposed for telemetry
 
@@ -59,8 +51,6 @@ public class WaypointFollower {
         this.coordinator = coordinator;
         this.estimator   = estimator;
     }
-
-    // --- Internal ---
 
     public void follow(List<Waypoint> path) {
         this.path         = path;
@@ -110,9 +100,6 @@ public class WaypointFollower {
         double yPower   = yPid.calculate(dy);
         double rotPower = headingPid.calculate(dh);
 
-        // The trapezoidal profile sets how fast we move; PID sets which way. Take the
-        // PID output as a direction (it carries cross-track correction) and rescale it
-        // to the profiled speed for where we are along the whole path.
         double pidMag = Math.hypot(xPower, yPower);
         double translateX = 0;
         double translateY = 0;
@@ -155,7 +142,6 @@ public class WaypointFollower {
         backRight.setPower(0);
     }
 
-    /** Last commanded speed from the profile, fraction of full power [0, 1]. For telemetry. */
     public double getCurrentSpeed() {
         return currentSpeed;
     }

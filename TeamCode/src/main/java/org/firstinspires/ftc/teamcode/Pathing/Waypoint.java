@@ -7,7 +7,6 @@ public class Waypoint {
     public final double heading; // radians
     public final boolean headingOverridden;
 
-    /** Motion-following heading — computed from direction of travel. */
     public Waypoint(double x, double y, double heading) {
         this.x = x;
         this.y = y;
@@ -15,7 +14,6 @@ public class Waypoint {
         this.headingOverridden = false;
     }
 
-    /** Manual heading override — robot will face this direction regardless of travel. */
     public Waypoint(double x, double y, double heading, boolean headingOverridden) {
         this.x = x;
         this.y = y;

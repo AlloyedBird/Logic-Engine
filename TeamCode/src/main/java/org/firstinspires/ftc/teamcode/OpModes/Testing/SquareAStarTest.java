@@ -21,13 +21,11 @@ public class SquareAStarTest extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        // --- Hardware ---
         DcMotor frontLeft  = hardwareMap.get(DcMotor.class, "frontLeft");
         DcMotor frontRight = hardwareMap.get(DcMotor.class, "frontRight");
         DcMotor backLeft   = hardwareMap.get(DcMotor.class, "backLeft");
         DcMotor backRight  = hardwareMap.get(DcMotor.class, "backRight");
 
-        // --- Subsystems ---
         PathCoordinator coordinator = new PathCoordinator(2);
         FieldObjectDetector detector = new FieldObjectDetector();
         coordinator.bakeStaticObstacles(new ArrayList<>());
@@ -44,7 +42,6 @@ public class SquareAStarTest extends LinearOpMode {
                 coordinator, estimator
         );
 
-        // --- Commands ---
         Command driveToCenter = new DriveToCommand(follower, coordinator, estimator, 72, 72);
 
         Command driveSquare = Groups.sequential(
@@ -64,17 +61,14 @@ public class SquareAStarTest extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            // --- Trigger test on A press ---
             boolean currentA = gamepad1.a;
             if (currentA && !lastA) {
                 Scheduler.schedule(fullTest);
             }
             lastA = currentA;
 
-            // --- Ivy tick ---
             Scheduler.execute();
 
-            // --- Telemetry ---
             Pose pose = estimator.getPose();
             telemetry.addData("x",       pose.x);
             telemetry.addData("y",       pose.y);

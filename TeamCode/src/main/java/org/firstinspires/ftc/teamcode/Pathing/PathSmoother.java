@@ -11,10 +11,6 @@ public class PathSmoother {
         this.grid = grid;
     }
 
-    /**
-     * Takes a raw A* path in inches and returns a thinned path
-     * by removing waypoints that are directly visible from earlier ones.
-     */
     public List<double[]> smooth(List<double[]> path) {
         if (path.size() <= 2) return path;
 
@@ -42,10 +38,6 @@ public class PathSmoother {
         return smoothed;
     }
 
-    /**
-     * Bresenham's line check — returns true if every cell between
-     * two inch-space points is walkable.
-     */
     private boolean hasLineOfSight(double[] a, double[] b) {
         int x0 = grid.toGrid(a[0]), y0 = grid.toGrid(a[1]);
         int x1 = grid.toGrid(b[0]), y1 = grid.toGrid(b[1]);

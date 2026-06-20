@@ -2,11 +2,6 @@ package org.firstinspires.ftc.teamcode.Motion;
 
 public class MecanumKinematics {
 
-    /**
-     * Converts x, y, and rotation powers into individual wheel powers.
-     * Assumes standard X-pattern roller orientation viewed from above.
-     * All inputs and outputs are in range [-1, 1].
-     */
     public static WheelPowers calculate(double x, double y, double rotation) {
         double frontLeft  =  y + x + rotation;
         double frontRight =  y - x - rotation;

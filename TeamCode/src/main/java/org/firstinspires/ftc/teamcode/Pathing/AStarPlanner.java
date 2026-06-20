@@ -40,10 +40,6 @@ public class  AStarPlanner {
         this.grid = grid;
     }
 
-    /**
-     * Find a path from start to goal in inches.
-     * Returns a list of inch-space waypoints, or empty list if no path found.
-     */
     public List<double[]> findPath(double startX, double startY, double goalX, double goalY) {
         int sx = grid.toGrid(startX), sy = grid.toGrid(startY);
         int gx = grid.toGrid(goalX), gy = grid.toGrid(goalY);
@@ -169,7 +165,6 @@ public class  AStarPlanner {
     private double heuristic(int x, int y, int gx, int gy) {
         int dx = Math.abs(x - gx);
         int dy = Math.abs(y - gy);
-        // Octile distance — exact for 8-directional grids
         return STRAIGHT_COST * (dx + dy) + (DIAGONAL_COST - 2 * STRAIGHT_COST) * Math.min(dx, dy);
     }
 

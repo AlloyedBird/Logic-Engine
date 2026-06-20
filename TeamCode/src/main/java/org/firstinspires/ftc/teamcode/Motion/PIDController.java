@@ -23,10 +23,6 @@ public class PIDController {
         this.integralCap = integralCap;
     }
 
-    /**
-     * Calculate output given current error.
-     * Call this every loop iteration.
-     */
     public double calculate(double error) {
         double now = System.nanoTime() / 1e9;
 
@@ -50,7 +46,6 @@ public class PIDController {
         return kP * error + kI * integral + kD * derivative;
     }
 
-    /** Reset state — call when switching to a new waypoint. */
     public void reset() {
         integral  = 0;
         lastError = 0;
