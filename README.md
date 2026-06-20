@@ -55,16 +55,16 @@ TeamCode/
 
 ## AI usage
 
-    * What I did:
-    Computer vision
-    Pathfinding & Following
-    Command scheduling
-    April tag localizing
+**What I did:**
+- Computer vision
+- Pathfinding & following
+- Command scheduling
+- AprilTag localization
 
-    * what claude did:
-    Bug hunting
-    Unit test implementation and running
-    Helped with the logic for velocity control
+**What Claude did:**
+- Bug hunting
+- Unit test implementation and running
+- Helped with the logic for velocity control
 
 ## About
 
