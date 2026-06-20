@@ -53,6 +53,20 @@ TeamCode/
 
 ---
 
+## AI usage
+
+I did use some ai in this:
+    * What I did:
+    Computer vision
+    Pathfinding & Following
+    Command scheduling
+    April tag localizing
+
+    * what claude did:
+    Bug hunting
+    Unit test implementation and running
+    Helped with the logic for velocity control
+
 ## About
 
 Built by AlloyedBird, sole developer and driver for Acme Robotics; a four-person FTC team
